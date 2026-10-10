@@ -107,7 +107,8 @@ alter table public.evilance_posts enable row level security;
 create or replace function public.evilance_touch_post()
 returns trigger language plpgsql set search_path = '' as $$ begin new.updated_at := now(); return new; end $$;
 create trigger evilance_posts_touch before update on public.evilance_posts for each row execute function public.evilance_touch_post();
-create policy "evilance_posts: lecture publique" on public.evilance_posts for select to anon, authenticated using (published or (select public.evilance_is_admin()));
+create policy "evilance_posts: lecture publique" on public.evilance_posts for select to anon, authenticated using (published);
+create policy "evilance_posts: lecture admin" on public.evilance_posts for select to authenticated using ((select public.evilance_is_admin()));
 create policy "evilance_posts: ajout admin" on public.evilance_posts for insert to authenticated with check ((select public.evilance_is_admin()));
 create policy "evilance_posts: modif admin" on public.evilance_posts for update to authenticated using ((select public.evilance_is_admin())) with check ((select public.evilance_is_admin()));
 create policy "evilance_posts: suppression admin" on public.evilance_posts for delete to authenticated using ((select public.evilance_is_admin()));
