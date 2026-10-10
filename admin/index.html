@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Espace admin · Evilance</title>
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <!-- Écran de connexion -->
+  <main class="auth" id="authView" hidden>
+    <div class="auth__card">
+      <img src="../assets/img/logo.svg" alt="Evilance" class="auth__logo">
+      <h1 class="auth__title" id="authTitle">Espace admin</h1>
+
+      <form id="loginForm" class="stack">
+        <label>E-mail<input type="email" name="email" autocomplete="username" required></label>
+        <label>Mot de passe<input type="password" name="password" autocomplete="current-password" required></label>
+        <button class="btn" type="submit">Se connecter</button>
+        <button class="linkbtn" type="button" id="toForgot">Mot de passe oublié ?</button>
+      </form>
+
+      <form id="forgotForm" class="stack" hidden>
+        <p class="muted">Indiquez votre e-mail : vous recevrez un lien pour choisir un nouveau mot de passe.</p>
+        <label>E-mail<input type="email" name="email" autocomplete="username" required></label>
+        <button class="btn" type="submit">Envoyer le lien</button>
+        <button class="linkbtn" type="button" id="toLogin">Retour à la connexion</button>
+      </form>
+
+      <form id="resetForm" class="stack" hidden>
+        <p class="muted">Choisissez votre nouveau mot de passe (10 caractères minimum).</p>
+        <label>Nouveau mot de passe<input type="password" name="password" autocomplete="new-password" minlength="10" required></label>
+        <label>Confirmation<input type="password" name="confirm" autocomplete="new-password" minlength="10" required></label>
+        <button class="btn" type="submit">Enregistrer le mot de passe</button>
+      </form>
+
+      <p class="auth__msg" id="authMsg" role="status"></p>
+    </div>
+  </main>
+
+  <!-- Tableau de bord -->
+  <div class="app" id="appView" hidden>
+    <aside class="side">
+      <img src="../assets/img/logo-light.svg" alt="Evilance" class="side__logo">
+      <nav class="side__nav" id="sideNav" aria-label="Sections"></nav>
+      <div class="side__foot">
+        <a href="../" target="_blank" rel="noopener" class="side__link">Voir le site</a>
+        <button class="side__link" id="logout" type="button">Se déconnecter</button>
+        <p class="side__who" id="who"></p>
+      </div>
+    </aside>
+    <main class="main" id="main" tabindex="-1"></main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/content-default.js"></script>
+  <script src="../vendor/supabase.min.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

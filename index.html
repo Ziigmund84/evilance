@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Evilance · Gestion locative à Orléans</title>
+  <meta name="description" content="Experts en gestion locative à Orléans, nous accompagnons propriétaires et locataires avec des solutions sur mesure et une approche humaine et de confiance.">
+  <meta name="theme-color" content="#0C2236">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Evilance">
+  <meta property="og:title" content="Evilance · Gestion locative à Orléans">
+  <meta property="og:description" content="Gérer. Partager. Construire ensemble. Une agence de gestion locative à taille humaine sur l’agglomération orléanaise.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/instrument-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/site.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"RealEstateAgent","name":"Evilance","url":"https://evilance.fr/","telephone":"+33775761580","email":"contact@evilance.fr","address":{"@type":"PostalAddress","streetAddress":"14 rue des Bouteilles","postalCode":"45000","addressLocality":"Orléans","addressCountry":"FR"},"areaServed":"Agglomération orléanaise","sameAs":["https://www.linkedin.com/company/evilance/"]}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#contenu">Aller au contenu</a>
+
+  <!-- ===== En-tête ===== -->
+  <header class="nav" id="nav">
+    <a class="nav__brand" href="#accueil" aria-label="Evilance, retour en haut">
+      <img src="assets/img/logo-light.svg" alt="Evilance" width="180" height="49">
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Navigation principale">
+      <a href="#gestion">Gestion locative</a>
+      <a href="#atouts">L’agence</a>
+      <a href="#offres">Offres</a>
+      <a href="#blog">Blog</a>
+      <a href="#ensemble">Construire ensemble</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="btn btn--key nav__cta" data-bind-href="settings.booking_url" target="_blank" rel="noopener">Prendre rendez-vous</a>
+    <button class="nav__burger" id="burger" aria-expanded="false" aria-controls="navLinks" aria-label="Ouvrir le menu"><span></span><span></span></button>
+  </header>
+
+  <main id="contenu">
+
+    <!-- ===== Hero : la clé entre dans la serrure ===== -->
+    <section class="hero" id="accueil" aria-label="Accueil">
+      <div class="hero__stage">
+        <div class="hero__glow" aria-hidden="true"></div>
+
+        <div class="hero__copy">
+          <h1 class="hero__title" data-bind="hero.title"></h1>
+          <p class="hero__hint" aria-hidden="true"><span class="hero__mouse"></span>Tournez la clé</p>
+        </div>
+
+        <svg class="hero__lock" viewBox="0 0 700 700" aria-hidden="true">
+          <defs>
+            <clipPath id="keyClip"><rect x="-400" y="0" width="832" height="700"/></clipPath>
+            <radialGradient id="cyl" cx="50%" cy="45%" r="60%">
+              <stop offset="0" stop-color="#1E4A70"/><stop offset="1" stop-color="#0C2236"/>
+            </radialGradient>
+          </defs>
+          <!-- anneaux décoratifs -->
+          <circle class="lock__halo" cx="450" cy="350" r="232" />
+          <circle class="lock__halo lock__halo--2" cx="450" cy="350" r="300" />
+          <!-- plaque -->
+          <circle class="lock__plate" cx="450" cy="350" r="150"/>
+          <g class="lock__turn" id="lockTurn">
+            <circle cx="450" cy="350" r="112" fill="url(#cyl)"/>
+            <circle class="lock__ring" id="lockRing" cx="450" cy="350" r="150"/>
+            <!-- trou de serrure -->
+            <circle cx="430" cy="350" r="20" fill="#06131F"/>
+            <rect x="430" y="341" width="92" height="18" rx="9" fill="#06131F"/>
+            <!-- clé -->
+            <g clip-path="url(#keyClip)">
+              <g class="key" id="key">
+                <rect class="key__shaft" x="104" y="341" width="236" height="18" rx="4"/>
+                <path class="key__teeth" d="M262 359h14v16h12v-8h12v18h12v-10h16v-16z"/>
+                <rect class="key__collar" x="104" y="333" width="20" height="34" rx="4"/>
+                <circle class="key__bow" cx="60" cy="350" r="48"/>
+                <circle class="key__bow-ring" cx="60" cy="350" r="48"/>
+                <path transform="translate(0 290)" fill="#fff" d="M45.015625 37.34375H77.484375V46.4375H57.046875V55.125H76.265625V64.21875H57.046875V74.90625H78.171875V84.0H45.015625Z"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+
+        <!-- l'intérieur qui se révèle quand la porte s'ouvre -->
+        <div class="hero__reveal" id="heroReveal">
+          <img class="hero__photo" data-bind-src="hero.image" alt="Intérieur lumineux d’un appartement géré par Evilance">
+          <div class="hero__reveal-copy">
+            <p class="hero__welcome">Bienvenue chez vous.</p>
+            <p class="hero__subtitle" data-bind="hero.subtitle"></p>
+            <div class="hero__ctas">
+              <a class="btn btn--key" href="#contact" data-bind="hero.cta_primary"></a>
+              <a class="btn btn--ghost" href="#agence" data-bind="hero.cta_secondary"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Manifeste ===== -->
+    <section class="manifesto" id="agence" aria-label="Notre engagement">
+      <p class="manifesto__text" id="manifesto" data-bind="manifesto.text"></p>
+    </section>
+
+    <!-- ===== Gestion locative : le trousseau ===== -->
+    <section class="gestion" id="gestion">
+      <div class="wrap">
+        <div class="gestion__head">
+          <h2 class="h2" data-bind="gestion.title"></h2>
+          <p class="lead" data-bind="gestion.intro"></p>
+        </div>
+      </div>
+      <div class="keyring" aria-label="Ce que nous prenons en charge">
+        <svg class="keyring__ring" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 34 Q100 -4 200 34" /></svg>
+        <ul class="keyring__tags" id="tags"></ul>
+      </div>
+      <div class="wrap gestion__adv">
+        <figure class="gestion__figure">
+          <img data-bind-src="gestion.image" alt="Maisons miniatures sur le bureau d’un gestionnaire" loading="lazy">
+        </figure>
+        <div>
+          <h3 class="h3" data-bind="gestion.advantages_title"></h3>
+          <dl class="adv" id="advantages"></dl>
+          <a class="btn btn--dark" href="#contact">Je suis intéressé·e</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Pourquoi nous choisir ===== -->
+    <section class="why" id="atouts">
+      <div class="wrap why__grid">
+        <div class="why__aside">
+          <h2 class="h2" data-bind="why.title"></h2>
+          <svg class="why__key" viewBox="0 0 260 110" aria-hidden="true">
+            <circle cx="55" cy="55" r="42"/><circle cx="55" cy="55" r="14"/>
+            <path d="M97 55h150M205 55v26M225 55v18M245 55v30"/>
+          </svg>
+        </div>
+        <div class="why__list" id="whyList"></div>
+      </div>
+    </section>
+
+    <!-- ===== Deux chemins ===== -->
+    <section class="paths" aria-labelledby="pathsTitle">
+      <div class="wrap"><h2 class="h2 paths__title" id="pathsTitle" data-bind="paths.title"></h2></div>
+      <div class="paths__doors">
+        <a class="door door--light" href="#blog">
+          <span class="door__knob" aria-hidden="true"></span>
+          <h3 class="h3" data-bind="paths.autonomous_title"></h3>
+          <p data-bind="paths.autonomous_text"></p>
+          <span class="door__cta" data-bind="paths.autonomous_cta"></span>
+        </a>
+        <a class="door door--dark" href="#contact">
+          <span class="door__knob" aria-hidden="true"></span>
+          <h3 class="h3" data-bind="paths.delegate_title"></h3>
+          <p data-bind="paths.delegate_text"></p>
+          <span class="door__cta" data-bind="paths.delegate_cta"></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== Offres du moment ===== -->
+    <section class="offers" id="offres" hidden>
+      <div class="wrap offers__grid">
+        <div class="offers__intro">
+          <h2 class="h2" data-bind="offers.title"></h2>
+          <p class="offers__until" id="offersUntil"></p>
+          <div class="countdown" id="countdown" aria-live="off"></div>
+          <figure class="offers__figure"><img data-bind-src="offers.image" alt="Petite maison offerte avec un ruban vert" loading="lazy"></figure>
+        </div>
+        <div class="offers__tickets" id="offerTickets"></div>
+      </div>
+    </section>
+
+    <!-- ===== Blog ===== -->
+    <section class="blog" id="blog">
+      <div class="blog__pin">
+        <div class="wrap blog__head">
+          <h2 class="h2" data-bind="blog.title"></h2>
+          <p class="lead" data-bind="blog.intro"></p>
+        </div>
+        <div class="blog__track" id="blogTrack"></div>
+      </div>
+      <div class="marquee" aria-label="Thèmes du blog"><div class="marquee__inner" id="cats"></div></div>
+    </section>
+
+    <!-- ===== Construire ensemble ===== -->
+    <section class="together" id="ensemble">
+      <div class="wrap together__grid">
+        <div class="together__visual" aria-hidden="true">
+          <svg class="together__halves" viewBox="0 0 400 400">
+            <path class="half half--left" d="M200 40 A160 160 0 0 0 200 360"/>
+            <path class="half half--right" d="M200 40 A160 160 0 0 1 200 360"/>
+          </svg>
+          <img class="together__photo" data-bind-src="together.image" alt="" loading="lazy">
+        </div>
+        <div class="together__copy">
+          <h2 class="h2" data-bind="together.title"></h2>
+          <blockquote class="together__quote" data-bind="together.quote"></blockquote>
+          <p class="lead" data-bind="together.text"></p>
+          <div class="together__ctas">
+            <a class="btn btn--key" data-bind="together.owner_label" data-bind-href="together.owner_url" target="_blank" rel="noopener"></a>
+            <a class="btn btn--line" data-bind="together.tenant_label" data-bind-href="together.tenant_url" target="_blank" rel="noopener"></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Contact ===== -->
+    <section class="contact" id="contact">
+      <div class="wrap contact__grid">
+        <div class="contact__info">
+          <h2 class="h2" data-bind="contact.title"></h2>
+          <p class="lead" data-bind="contact.intro"></p>
+          <div class="info">
+            <a class="info__item" data-bind-href="settings.booking_url" target="_blank" rel="noopener">
+              <strong>Prendre rendez-vous</strong><span data-bind="contact.booking_text"></span>
+            </a>
+            <a class="info__item" id="mailLink">
+              <strong data-bind="settings.email"></strong><span>Écrivez-nous, nous répondons rapidement.</span>
+            </a>
+            <a class="info__item" id="telLink">
+              <strong data-bind="settings.phone"></strong><span data-bind="contact.phone_text"></span>
+            </a>
+            <a class="info__item" id="mapLink" target="_blank" rel="noopener">
+              <strong data-bind="settings.address"></strong><span>Voir sur la carte</span>
+            </a>
+          </div>
+        </div>
+
+        <form class="form" id="contactForm" novalidate>
+          <div class="form__row">
+            <label>Nom<input name="last_name" autocomplete="family-name" required maxlength="100"></label>
+            <label>Prénom<input name="first_name" autocomplete="given-name" maxlength="100"></label>
+          </div>
+          <div class="form__row">
+            <label>E-mail<input name="email" type="email" autocomplete="email" required maxlength="200"></label>
+            <label>Téléphone<input name="phone" type="tel" autocomplete="tel" maxlength="30"></label>
+          </div>
+          <label>Vous êtes
+            <select name="profile">
+              <option>Propriétaire</option><option>Locataire</option><option>Lecteur du blog</option><option>Partenaire</option><option>Autre</option>
+            </select>
+          </label>
+          <label>Objet<input name="subject" maxlength="200"></label>
+          <label>Message<textarea name="message" rows="5" required maxlength="4000"></textarea></label>
+          <label class="form__hp" aria-hidden="true">Site web<input name="website" tabindex="-1" autocomplete="off"></label>
+          <p class="form__legal">Vos données servent uniquement à vous répondre. <button type="button" class="linklike" data-open-legal>En savoir plus</button>.</p>
+          <button class="btn btn--key form__submit" type="submit">Envoyer le message</button>
+          <p class="form__status" id="formStatus" role="status"></p>
+        </form>
+      </div>
+
+      <div class="smile" aria-hidden="false">
+        <p class="smile__text" data-bind="contact.closing"></p>
+        <svg class="smile__svg" viewBox="0 0 600 120" aria-hidden="true">
+          <circle class="smile__eye" cx="250" cy="22" r="7"/><circle class="smile__eye" cx="350" cy="22" r="7"/>
+          <path class="smile__curve" d="M120 50 Q300 170 480 50"/>
+        </svg>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__grid">
+      <img src="assets/img/logo-light.svg" alt="Evilance" width="220" height="60">
+      <p class="footer__tag">Gestion locative sur l’agglomération orléanaise.</p>
+      <nav class="footer__links" aria-label="Liens utiles">
+        <a data-bind-href="settings.linkedin_url" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="#contact">Nous contacter</a>
+        <button type="button" class="linklike" data-open-legal>Mentions légales et confidentialité</button>
+        <a href="admin/">Espace admin</a>
+      </nav>
+      <p class="footer__copy">© <span id="year"></span> EVILANCE. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <dialog class="legal" id="legal" aria-labelledby="legalTitle">
+    <div class="legal__head">
+      <h2 class="h3" id="legalTitle">Mentions légales et politique de confidentialité</h2>
+      <button class="legal__close" type="button" aria-label="Fermer">×</button>
+    </div>
+    <div class="legal__body" data-bind-html="legal.html"></div>
+  </dialog>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/content-default.js"></script>
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/DrawSVGPlugin.min.js" defer></script>
+  <script src="vendor/SplitText.min.js" defer></script>
+  <script src="vendor/lenis.min.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+</body>
+</html>
