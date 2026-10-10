@@ -51,42 +51,52 @@
           <p class="hero__hint" aria-hidden="true"><span class="hero__mouse"></span>Tournez la clé</p>
         </div>
 
-        <!-- Serrure verticale + clé en 3D (la tête de la clé reprend le monogramme E) -->
+        <!-- Serrure verticale + clé (la tête reprend le monogramme E) -->
         <div class="lock" id="lockWrap" aria-hidden="true">
-          <div class="lock__stage" id="lockStage">
-            <div class="lock__halo"></div>
-            <div class="lock__halo lock__halo--2"></div>
-            <svg class="lock__plate" id="lockPlate" viewBox="0 0 240 420">
-              <defs>
-                <linearGradient id="plateG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1A4466"/><stop offset="1" stop-color="#0B2236"/></linearGradient>
-                <radialGradient id="holeG" cx="50%" cy="35%" r="70%"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#0A1A29"/></radialGradient>
-              </defs>
-              <rect class="plate__body" x="4" y="4" width="232" height="412" rx="116" fill="url(#plateG)"/>
+          <svg class="lock__svg" viewBox="0 0 760 560">
+            <defs>
+              <linearGradient id="plateG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1A4466"/><stop offset="1" stop-color="#0B2236"/></linearGradient>
+              <radialGradient id="holeG" cx="50%" cy="30%" r="75%"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#0A1A29"/></radialGradient>
+              <linearGradient id="kGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE08F"/><stop offset=".5" stop-color="#FFCA4B"/><stop offset="1" stop-color="#E39A16"/></linearGradient>
+              <linearGradient id="kAzur" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2CC6F8"/><stop offset="1" stop-color="#0079BC"/></linearGradient>
+              <!-- tout ce qui dépasse le centre du trou est « dans » la serrure -->
+              <clipPath id="keyClip"><rect x="-1000" y="-200" width="1600" height="960"/></clipPath>
+              <filter id="soft" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#000" flood-opacity=".35"/></filter>
+            </defs>
+
+            <circle class="lock__halo" cx="600" cy="242" r="235"/>
+            <circle class="lock__halo lock__halo--2" cx="600" cy="242" r="310"/>
+
+            <!-- plaque de serrure verticale -->
+            <g class="lock__plate" id="lockPlate" transform="translate(480 50)" filter="url(#soft)">
+              <rect x="4" y="4" width="232" height="412" rx="116" fill="url(#plateG)"/>
               <rect class="plate__edge" id="plateEdge" x="4" y="4" width="232" height="412" rx="116"/>
               <rect class="plate__inner" x="22" y="22" width="196" height="376" rx="98"/>
               <g class="plate__screw"><circle cx="120" cy="62" r="9"/><path d="M114 62h12"/></g>
               <g class="plate__screw"><circle cx="120" cy="358" r="9"/><path d="M114 358h12"/></g>
-              <path class="plate__hole" id="keyhole" fill="url(#holeG)" d="M120 166a26 26 0 0 1 13 48.5L142 286h-44l9-71.5A26 26 0 1 1 120 166z"/>
-            </svg>
-            <div class="key3d" id="key3d">
-              <div class="key3d__inner" id="keyInner">
-                <svg viewBox="0 0 460 150">
-                  <defs>
-                    <linearGradient id="kGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE08F"/><stop offset=".5" stop-color="#FFCA4B"/><stop offset="1" stop-color="#E39A16"/></linearGradient>
-                    <linearGradient id="kAzur" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2CC6F8"/><stop offset="1" stop-color="#0079BC"/></linearGradient>
-                  </defs>
-                  <path class="key__teeth" fill="url(#kGold)" d="M300 86v16h18v-8h16v20h18v-12h16v16h20v-16h14V86z"/>
-                  <path class="key__blade" fill="url(#kGold)" d="M150 62H436l16 13-16 13H150z"/>
+              <!-- trou de serrure : un cercle parfait + une fente -->
+              <path class="plate__hole" d="M107 212L98 286h44l-9-74z" fill="url(#holeG)"/>
+              <circle class="plate__hole" id="keyhole" cx="120" cy="192" r="26" fill="url(#holeG)"/>
+            </g>
+
+            <!-- clé : la pointe est en x=452, les dents commencent en x=300 -->
+            <g clip-path="url(#keyClip)">
+              <g class="key" id="key" transform="translate(18 167)">
+                <g id="keyTurn" filter="url(#soft)">
+                  <path fill="url(#kGold)" d="M300 86v16h18v-8h16v20h18v-12h16v16h20v-16h14V86z"/>
+                  <path fill="url(#kGold)" d="M150 62H436l16 13-16 13H150z"/>
                   <path class="key__groove" d="M172 71H420"/>
                   <rect class="key__collar" x="134" y="50" width="26" height="50" rx="10"/>
                   <circle cx="75" cy="75" r="68" fill="url(#kAzur)"/>
                   <circle class="key__rim" cx="75" cy="75" r="61"/>
                   <path class="key__e" d="M96.9 45.9H53.1V104.1H96.9M53.1 75H77.4"/>
                   <circle cx="99.3" cy="75" r="8.5" fill="#FFCA4B"/>
-                </svg>
-              </div>
-            </div>
-          </div>
+                  <!-- ombre qui passe sur la clé pendant qu'elle tourne -->
+                  <path id="keyShade" fill="#06131F" opacity="0" d="M150 62H436l16 13-16 13H150zM134 60a10 10 0 0 1 10-10h6a10 10 0 0 1 10 10v30a10 10 0 0 1-10 10h-6a10 10 0 0 1-10-10zM75 7a68 68 0 1 1 0 136a68 68 0 1 1 0-136z"/>
+                </g>
+              </g>
+            </g>
+          </svg>
         </div>
 
         <!-- l'intérieur qui se révèle quand la porte s'ouvre -->

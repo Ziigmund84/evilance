@@ -217,21 +217,8 @@
     else target.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
   }
 
-  // Mise à l'échelle de la scène 3D de la serrure
-  function fitLock() {
-    var wrap = $("#lockWrap"), stage = $(".hero__stage");
-    if (!wrap || !stage) return;
-    var mobile = window.innerWidth <= 860;
-    var cs = getComputedStyle(stage);
-    var inner = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    var w = mobile ? inner : inner * 0.5;
-    var h = window.innerHeight * (mobile ? 0.48 : 0.8);
-    wrap.style.setProperty("--k", Math.min(1, w / 760, h / 560).toFixed(3));
-  }
-
   function initUi() {
-    fitLock();
-    window.addEventListener("resize", fitLock);
+
     var burger = $("#burger"), links = $("#navLinks");
     burger.addEventListener("click", function () {
       var open = burger.getAttribute("aria-expanded") !== "true";
@@ -349,23 +336,33 @@
     }
 
     /* --- 1. Ouverture : titre, serrure, la clé arrive de la gauche --- */
-    var key = $("#key3d"), keyIn = $("#keyInner");
-    gsap.set(key, { x: -120, z: 2, rotationY: 0, transformOrigin: "452px 75px" });
-    gsap.set(keyIn, { transformOrigin: "50% 50%" });
+    var key = $("#key"), turn = $("#keyTurn"), shade = $("#keyShade");
+    var KEY_Y = 167, KEY_START = 18, KEY_IN = 300; // en x=300 commencent les dents ; le centre du trou est en x=600
+    var state = { x: KEY_START, a: 0 };
+    function drawKey() {
+      var c = Math.cos(state.a * Math.PI / 180);
+      // rotation autour de l'axe de la clé (y = 75) : vue de profil, elle s'aplatit puis se retourne
+      key.setAttribute("transform", "translate(" + state.x.toFixed(2) + " " + KEY_Y + ")");
+      turn.setAttribute("transform", "translate(0 75) scale(1 " + c.toFixed(4) + ") translate(0 -75)");
+      shade.setAttribute("opacity", ((1 - Math.abs(c)) * 0.5 + (c < 0 ? 0.18 : 0)).toFixed(3));
+    }
+    drawKey();
     var intro = gsap.timeline({ defaults: { ease: "expo.out" } });
     intro
       .from(".hero__title .word", { yPercent: 110, duration: 1.3, stagger: 0.12 })
-      .from(".lock__plate", { y: 40, opacity: 0, duration: 1.3 }, 0.25)
+      .from("#lockPlate", { opacity: 0, duration: 1.2 }, 0.25)
       .from("#plateEdge", { drawSVG: "50% 50%", duration: 1.5, ease: "power3.inOut" }, 0.3)
-      .from(".lock__halo", { scale: 0.7, opacity: 0, duration: 1.6, stagger: 0.15 }, 0.4)
-      .from(keyIn, { x: -260, opacity: 0, duration: 1.5 }, 0.7)
+      .from(".lock__halo", { opacity: 0, scale: 0.8, transformOrigin: "50% 50%", duration: 1.6, stagger: 0.15 }, 0.4)
+      .from(state, { x: KEY_START - 240, duration: 1.6, onUpdate: drawKey }, 0.7)
+      .from(key, { opacity: 0, duration: 0.8 }, 0.7)
       .from(".hero__hint", { opacity: 0, y: 10, duration: 0.8 }, 1.1);
 
-    /* --- 2. Scroll : la clé pivote dans la serrure, s'enfonce, tourne sur elle-même, la porte s'ouvre --- */
+    /* --- 2. Scroll : la clé entre jusqu'aux dents, fait un tour complet sur elle-même, la porte s'ouvre --- */
+
     var stage = $(".hero__stage"), hole = $("#keyhole"), reveal = $("#heroReveal");
     function holeGeom() {
       var s = stage.getBoundingClientRect(), r = hole.getBoundingClientRect(), p = $("#lockPlate").getBoundingClientRect();
-      return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.width / 2, r: p.width / 2 };
+      return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.height / 2, r: p.width / 2 };
     }
     function clipAt(rad) {
       var g = holeGeom();
@@ -382,17 +379,14 @@
       scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom bottom", scrub: 0.8, invalidateOnRefresh: true }
     });
     tl.to(".hero__hint", { opacity: 0, duration: 0.05 }, 0)
-      // la pointe glisse jusqu'au trou puis la clé pivote vers l'intérieur de la serrure
-      .to(key, { x: 0, duration: 0.17, ease: "power1.inOut" }, 0.03)
-      .to(key, { rotationY: 64, duration: 0.16, ease: "power1.inOut" }, 0.06)
-      // elle s'enfonce le long de son axe
-      .to(keyIn, { x: 112, duration: 0.1, ease: "power3.in" }, 0.25)
-      .to(".lock__plate", { x: 4, duration: 0.012, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.35)
-      // elle tourne sur elle-même, la serrure s'allume
-      .to(keyIn, { rotationX: 180, duration: 0.14, ease: "back.inOut(1.3)" }, 0.37)
-      .to("#plateEdge", { stroke: "#FFCA4B", duration: 0.04 }, 0.47)
+      // la clé glisse et s'arrête net : les dents sont entièrement dans la serrure
+      .to(state, { x: KEY_IN, duration: 0.24, ease: "power2.inOut", onUpdate: drawKey }, 0.03)
+      .to("#lockPlate", { x: 3, duration: 0.01, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.27)
+      // un tour complet sur elle-même
+      .to(state, { a: 360, duration: 0.18, ease: "power1.inOut", onUpdate: drawKey }, 0.3)
+      .to("#plateEdge", { stroke: "#FFCA4B", duration: 0.04 }, 0.46)
       .to(".hero__title .word", { yPercent: -110, duration: 0.12, stagger: 0.02, ease: "power2.in" }, 0.44)
-      .to(".lock__halo", { scale: 1.6, opacity: 0, duration: 0.2 }, 0.47)
+      .to(".lock__halo", { scale: 1.5, opacity: 0, transformOrigin: "50% 50%", duration: 0.18 }, 0.47)
       .fromTo(reveal, { clipPath: function () { return clipAt(0); } }, { clipPath: function () { return clipAt(); }, duration: 0.05 }, 0.53)
       .to(reveal, { clipPath: function () { return clipAt(maxRadius()); }, duration: 0.3, ease: "power2.in" }, 0.58)
       .to(".hero__photo", { scale: 1, duration: 0.38 }, 0.56)
