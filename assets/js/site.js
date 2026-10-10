@@ -325,9 +325,9 @@
     intro
       .from(".hero__title .word", { yPercent: 110, duration: 1.3, stagger: 0.12 })
       .from(".lock__ring", { drawSVG: "50% 50%", duration: 1.4, ease: "power3.inOut" }, 0.2)
-      .from(".lock__plate, .lock__turn > circle:first-child", { scale: 0.6, transformOrigin: "450px 350px", opacity: 0, duration: 1.2 }, 0.3)
-      .from(".lock__halo", { scale: 0.7, transformOrigin: "450px 350px", opacity: 0, duration: 1.6, stagger: 0.15 }, 0.4)
-      .from("#key", { x: -140, opacity: 0, duration: 1.2 }, 0.7)
+      .from(".lock__plate, .lock__cyl, .lock__hole", { scale: 0.6, svgOrigin: "350 500", opacity: 0, duration: 1.2 }, 0.3)
+      .from(".lock__halo", { scale: 0.7, svgOrigin: "350 500", opacity: 0, duration: 1.6, stagger: 0.15 }, 0.4)
+      .from("#key", { y: -120, rotation: -14, svgOrigin: "350 92", opacity: 0, duration: 1.4 }, 0.7)
       .from(".hero__hint", { opacity: 0, y: 10, duration: 0.8 }, 1.1);
 
     /* --- 2. Scroll : la clé entre, tourne, la porte s'ouvre --- */
@@ -351,12 +351,12 @@
       scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom bottom", scrub: 0.8, invalidateOnRefresh: true }
     });
     tl.to(".hero__hint", { opacity: 0, duration: 0.05 }, 0)
-      .to("#key", { x: 182, duration: 0.3, ease: "power2.inOut" }, 0.04)
+      .to("#key", { y: 164, duration: 0.3, ease: "power2.inOut" }, 0.04)
       .to(".lock__ring", { stroke: "#FFCA4B", duration: 0.04 }, 0.33)
-      .to("#key", { scaleY: -1, svgOrigin: "450 350", duration: 0.14, ease: "back.inOut(1.6)" }, 0.35)
-      .fromTo(".lock__ring", { scale: 1 }, { scale: 1.07, svgOrigin: "450 350", duration: 0.04, yoyo: true, repeat: 1, ease: "power2.out" }, 0.47)
+      .to("#lockTurn", { rotation: 90, svgOrigin: "350 478", duration: 0.14, ease: "back.inOut(1.4)" }, 0.35)
+      .fromTo(".lock__ring", { scale: 1 }, { scale: 1.07, svgOrigin: "350 500", duration: 0.04, yoyo: true, repeat: 1, ease: "power2.out" }, 0.47)
       .to(".hero__title .word", { yPercent: -110, duration: 0.12, stagger: 0.02, ease: "power2.in" }, 0.44)
-      .to(".lock__halo", { scale: 1.6, opacity: 0, transformOrigin: "450px 350px", duration: 0.2 }, 0.46)
+      .to(".lock__halo", { scale: 1.6, opacity: 0, svgOrigin: "350 500", duration: 0.2 }, 0.46)
       .fromTo(reveal, { clipPath: function () { return clipAt(0); } }, { clipPath: function () { return clipAt(); }, duration: 0.04 }, 0.52)
       .to(reveal, { clipPath: function () { return clipAt(maxRadius()); }, duration: 0.3, ease: "power2.in" }, 0.56)
       .to(".hero__photo", { scale: 1, duration: 0.38 }, 0.56)

@@ -194,16 +194,16 @@ button { font: inherit; }
 .hero__mouse::after { content: ""; position: absolute; left: 50%; top: 6px; width: 4px; height: 7px; margin-left: -2px; border-radius: 2px; background: var(--miel); animation: wheel 1.8s infinite; }
 @keyframes wheel { 0% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(10px); opacity: 0; } 100% { opacity: 0; } }
 
-.hero__lock { position: relative; z-index: 1; width: 100%; max-width: 640px; justify-self: end; overflow: visible; }
+.hero__lock { position: relative; z-index: 1; height: min(80vh, 780px); height: min(80svh, 780px); width: auto; max-width: 100%; justify-self: center; overflow: visible; }
 .lock__halo { fill: none; stroke: rgba(0,176,240,.18); stroke-width: 1.5; stroke-dasharray: 2 10; }
 .lock__halo--2 { stroke: rgba(255,255,255,.07); stroke-dasharray: none; }
 .lock__plate { fill: #0F2B44; }
 .lock__ring { fill: none; stroke: var(--azur); stroke-width: 6; }
-.lock__turn { transform-box: view-box; transform-origin: 450px 350px; }
-.key__shaft, .key__teeth, .key__collar { fill: var(--miel); }
+.lock__hole { fill: #06131F; }
+.key { filter: drop-shadow(0 18px 22px rgba(0,0,0,.35)); }
+.key__shine { fill: #fff; opacity: .45; }
 .key__collar { fill: var(--ambre); }
-.key__bow { fill: var(--marine); }
-.key__bow-ring { fill: none; stroke: var(--azur); stroke-width: 5; }
+.key__bow-line { fill: none; stroke: rgba(255,255,255,.35); stroke-width: 2; }
 
 .hero__reveal {
   position: absolute; inset: 0; z-index: 3; background: var(--marine);
@@ -220,7 +220,8 @@ button { font: inherit; }
 
 @media (max-width: 860px) {
   .hero__stage { grid-template-columns: 1fr; grid-template-rows: auto 1fr; align-content: start; padding-top: 110px; }
-  .hero__lock { justify-self: center; max-width: 440px; margin-top: -10px; }
+  .hero__lock { height: auto; width: min(100%, 340px); margin-top: -20px; }
+  .hero__hint { display: none; }
   .hero__reveal { clip-path: circle(0px at 50% 66%); }
 }
 

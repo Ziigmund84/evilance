@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Evilance"><defs><linearGradient id="g4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22C1F7"/><stop offset="1" stop-color="#0084C7"/></linearGradient></defs>
+<circle cx="60" cy="60" r="56" fill="url(#g4)"/>
+<path d="M78 36H42V84H78M42 60H62" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="80" cy="60" r="7" fill="#FFCA4B"/></svg>
