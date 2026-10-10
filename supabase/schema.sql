@@ -85,3 +85,31 @@ create policy "evilance-media: liste admin" on storage.objects for select to aut
 
 -- Donner les droits d’administration à un compte existant :
 -- insert into public.evilance_admins (user_id) select id from auth.users where lower(email) = 'jerome.millier@yahoo.fr';
+
+-- Articles du blog
+create table if not exists public.evilance_posts (
+  id bigint generated always as identity primary key,
+  slug text not null unique check (slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$' and char_length(slug) <= 120),
+  title text not null check (char_length(title) between 1 and 200),
+  excerpt text not null default '' check (char_length(excerpt) <= 600),
+  content text not null default '',
+  category text not null default '' check (char_length(category) <= 80),
+  cover_url text not null default '',
+  author text not null default 'Olivier',
+  published boolean not null default true,
+  published_at date not null default current_date,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  words integer generated always as (coalesce(array_length(regexp_split_to_array(trim(regexp_replace(content, '<[^>]+>', ' ', 'g')), '\s+'), 1), 0)) stored
+);
+create index if not exists evilance_posts_published_idx on public.evilance_posts (published, published_at desc);
+alter table public.evilance_posts enable row level security;
+create or replace function public.evilance_touch_post()
+returns trigger language plpgsql set search_path = '' as $$ begin new.updated_at := now(); return new; end $$;
+create trigger evilance_posts_touch before update on public.evilance_posts for each row execute function public.evilance_touch_post();
+create policy "evilance_posts: lecture publique" on public.evilance_posts for select to anon, authenticated using (published or (select public.evilance_is_admin()));
+create policy "evilance_posts: ajout admin" on public.evilance_posts for insert to authenticated with check ((select public.evilance_is_admin()));
+create policy "evilance_posts: modif admin" on public.evilance_posts for update to authenticated using ((select public.evilance_is_admin())) with check ((select public.evilance_is_admin()));
+create policy "evilance_posts: suppression admin" on public.evilance_posts for delete to authenticated using ((select public.evilance_is_admin()));
+grant select on public.evilance_posts to anon, authenticated;
+grant insert, update, delete on public.evilance_posts to authenticated;

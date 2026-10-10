@@ -36,7 +36,7 @@ Pour utiliser le nom de domaine `evilance.fr`, renseignez-le dans **Settings →
 - **Médias** : envoi et choix des images (stockées dans Supabase Storage).
 - **Messages** : demandes envoyées depuis le formulaire de contact.
 
-Seuls les comptes listés dans la table `admins` ont les droits d’écriture.
+Seuls les comptes listés dans la table `evilance_admins` ont les droits d’écriture.
 
 ## Développement local
 
