@@ -344,7 +344,7 @@
       // rotation autour de l'axe de la clé (y = 75) : vue de profil, elle s'aplatit puis se retourne
       key.setAttribute("transform", "translate(" + state.x.toFixed(2) + " " + KEY_Y + ")");
       turn.setAttribute("transform", "translate(0 75) scale(1 " + c.toFixed(4) + ") translate(0 -75)");
-      shade.setAttribute("opacity", ((1 - Math.abs(c)) * 0.5 + (c < 0 ? 0.18 : 0)).toFixed(3));
+      shade.setAttribute("opacity", ((1 - Math.abs(c)) * 0.5).toFixed(3));
     }
     drawKey();
     var intro = gsap.timeline({ defaults: { ease: "expo.out" } });
@@ -381,8 +381,8 @@
     tl.to(".hero__hint", { opacity: 0, duration: 0.05 }, 0)
       // la clé glisse et s'arrête net : les dents sont entièrement dans la serrure
       .to(state, { x: KEY_IN, duration: 0.24, ease: "power2.inOut", onUpdate: drawKey }, 0.03)
-      // un tour complet sur elle-même
-      .to(state, { a: 360, duration: 0.18, ease: "power1.inOut", onUpdate: drawKey }, 0.3)
+      // un demi-tour sur elle-même
+      .to(state, { a: 180, duration: 0.14, ease: "power1.inOut", onUpdate: drawKey }, 0.3)
       .to("#plateEdge", { stroke: "#FFCA4B", duration: 0.04 }, 0.46)
       .to(".hero__title .word", { yPercent: -110, duration: 0.12, stagger: 0.02, ease: "power2.in" }, 0.44)
       .to(".lock__halo", { scale: 1.5, opacity: 0, transformOrigin: "50% 50%", duration: 0.18 }, 0.47)
