@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Article · Le blog Evilance</title>
+  <meta name="description" content="Le blog d’Evilance, agence de gestion locative à Orléans.">
+  <meta name="theme-color" content="#0C2236">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:title" content="Le blog Evilance">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/site.css">
+  <link rel="stylesheet" href="assets/css/blog.css">
+</head>
+<body class="page-article">
+  <a class="skip" href="#contenu">Aller au contenu</a>
+  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+  <header class="nav is-solid" id="nav">
+    <a class="nav__brand" href="index.html" aria-label="Evilance, accueil">
+      <img src="assets/img/logo-light.svg" alt="Evilance" width="176" height="55">
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Navigation principale">
+      <a href="index.html#gestion">Gestion locative</a>
+      <a href="index.html#atouts">L’agence</a>
+      <a href="index.html#offres">Offres</a>
+      <a href="blog.html" class="is-active">Blog</a>
+      <a href="index.html#ensemble">Construire ensemble</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+    <a class="btn btn--key nav__cta" data-booking target="_blank" rel="noopener">Prendre rendez-vous</a>
+    <button class="nav__burger" id="burger" aria-expanded="false" aria-controls="navLinks" aria-label="Ouvrir le menu"><span></span><span></span></button>
+  </header>
+
+  <main id="contenu">
+    <article class="post-page" id="article" aria-busy="true">
+      <header class="ahero">
+        <div class="wrap ahero__inner">
+          <nav class="crumbs" aria-label="Fil d’Ariane"><a href="blog.html">Le blog</a><span aria-hidden="true">/</span><a id="aCat" href="blog.html"></a></nav>
+          <h1 class="ahero__title" id="aTitle"><span class="skeleton" style="width:80%"></span></h1>
+          <p class="ahero__meta" id="aMeta"></p>
+        </div>
+        <div class="wrap">
+          <figure class="ahero__cover" id="aCoverWrap"><img id="aCover" alt=""></figure>
+        </div>
+      </header>
+
+      <div class="wrap abody">
+        <aside class="aside" aria-label="Dans cet article">
+          <div class="aside__sticky">
+            <p class="aside__label">Dans cet article</p>
+            <ol class="toc" id="toc"></ol>
+            <p class="aside__label">Partager</p>
+            <div class="share">
+              <a class="share__btn" id="shareLinkedin" target="_blank" rel="noopener" aria-label="Partager sur LinkedIn">in</a>
+              <a class="share__btn" id="shareMail" aria-label="Envoyer par e-mail">@</a>
+              <button class="share__btn" type="button" id="shareCopy" aria-label="Copier le lien">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+              </button>
+            </div>
+            <p class="share__ok" id="shareOk" role="status"></p>
+          </div>
+        </aside>
+        <div class="prose" id="aBody"></div>
+      </div>
+
+      <section class="wrap aend">
+        <div class="aend__cta">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="#00B0F0"/><path d="M78 36H42V84H78M42 60H62" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="80" cy="60" r="7" fill="#FFCA4B"/></svg>
+          <div>
+            <h2 class="h3">Une question sur votre location&nbsp;?</h2>
+            <p>Un interlocuteur unique, sur l’agglomération orléanaise, pour vous conseiller ou gérer votre bien de A à Z.</p>
+          </div>
+          <a class="btn btn--key" href="index.html#contact">Nous écrire</a>
+        </div>
+      </section>
+    </article>
+
+    <section class="related" id="relatedWrap" hidden>
+      <div class="wrap">
+        <h2 class="h2">À lire aussi</h2>
+        <div class="bgrid" id="related"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__grid">
+      <img src="assets/img/logo-light.svg" alt="Evilance" width="208" height="65">
+      <p class="footer__tag">Gestion locative sur l’agglomération orléanaise.</p>
+      <nav class="footer__links" aria-label="Liens utiles">
+        <a href="index.html">Accueil</a>
+        <a href="blog.html">Le blog</a>
+        <a href="index.html#contact">Nous contacter</a>
+        <a href="index.html#mentions">Mentions légales et confidentialité</a>
+      </nav>
+      <p class="footer__copy">© <span data-year></span> EVILANCE. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/content-default.js"></script>
+  <script src="assets/js/blog.js"></script>
+</body>
+</html>

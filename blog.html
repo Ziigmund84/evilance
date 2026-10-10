@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le blog · Evilance, gestion locative à Orléans</title>
+  <meta name="description" content="Conseils, obligations légales, fiscalité, relations locataires-propriétaires : le blog d’Evilance pour gérer sereinement votre bien en location.">
+  <meta name="theme-color" content="#0C2236">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:title" content="Le blog d’Evilance">
+  <meta property="og:description" content="Tout ce qu’il faut savoir pour louer et gérer un bien en toute sérénité.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/site.css">
+  <link rel="stylesheet" href="assets/css/blog.css">
+</head>
+<body class="page-blog">
+  <a class="skip" href="#contenu">Aller au contenu</a>
+
+  <header class="nav is-solid" id="nav">
+    <a class="nav__brand" href="index.html" aria-label="Evilance, accueil">
+      <img src="assets/img/logo-light.svg" alt="Evilance" width="176" height="55">
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Navigation principale">
+      <a href="index.html#gestion">Gestion locative</a>
+      <a href="index.html#atouts">L’agence</a>
+      <a href="index.html#offres">Offres</a>
+      <a href="blog.html" class="is-active" aria-current="page">Blog</a>
+      <a href="index.html#ensemble">Construire ensemble</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+    <a class="btn btn--key nav__cta" data-booking target="_blank" rel="noopener">Prendre rendez-vous</a>
+    <button class="nav__burger" id="burger" aria-expanded="false" aria-controls="navLinks" aria-label="Ouvrir le menu"><span></span><span></span></button>
+  </header>
+
+  <main id="contenu">
+    <section class="bhero">
+      <div class="wrap bhero__grid">
+        <div>
+          <h1 class="bhero__title">Le blog</h1>
+          <p class="bhero__lead">Obligations légales, fiscalité, relations avec les locataires, entretien du bien : nos conseils pour louer l’esprit tranquille. Et si vous préférez déléguer, nous sommes là.</p>
+        </div>
+        <label class="search">
+          <span class="sr">Rechercher un article</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+          <input type="search" id="q" placeholder="Rechercher un sujet : bail, DPE, impayés…" autocomplete="off">
+        </label>
+      </div>
+      <div class="wrap">
+        <div class="chips" id="chips" role="group" aria-label="Filtrer par thème"></div>
+      </div>
+    </section>
+
+    <section class="wrap bfeed" aria-live="polite">
+      <p class="bcount" id="count"></p>
+      <div id="featured"></div>
+      <div class="bgrid" id="grid"></div>
+      <div class="bempty" id="empty" hidden>
+        <p>Aucun article ne correspond à cette recherche.</p>
+        <button class="btn btn--line" type="button" id="reset">Voir tous les articles</button>
+      </div>
+    </section>
+
+    <section class="bcta">
+      <div class="wrap bcta__inner">
+        <h2 class="h2">Vous préférez déléguer&nbsp;?</h2>
+        <p class="lead">Nous gérons votre bien de A à Z sur l’agglomération orléanaise, avec un interlocuteur unique.</p>
+        <a class="btn btn--key" href="index.html#contact">Parler de mon bien</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__grid">
+      <img src="assets/img/logo-light.svg" alt="Evilance" width="208" height="65">
+      <p class="footer__tag">Gestion locative sur l’agglomération orléanaise.</p>
+      <nav class="footer__links" aria-label="Liens utiles">
+        <a href="index.html">Accueil</a>
+        <a href="index.html#contact">Nous contacter</a>
+        <a href="index.html#mentions">Mentions légales et confidentialité</a>
+        <a href="admin/">Espace admin</a>
+      </nav>
+      <p class="footer__copy">© <span data-year></span> EVILANCE. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/content-default.js"></script>
+  <script src="assets/js/blog.js"></script>
+</body>
+</html>

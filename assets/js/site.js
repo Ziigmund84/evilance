@@ -29,7 +29,7 @@
   }
   function safeUrl(u) {
     u = String(u || "").trim();
-    return /^(https?:|mailto:|tel:|#|assets\/)/i.test(u) ? u : "#";
+    return /^(https?:|mailto:|tel:|#|assets\/|blog\.html|article\.html|index\.html)/i.test(u) ? u : "#";
   }
   function frDate(iso) {
     try { return new Date(iso + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }); }
@@ -43,18 +43,29 @@
     if (!CFG.supabaseUrl || !CFG.supabaseKey) return Promise.resolve(DEFAULT);
     var ctrl = window.AbortController ? new AbortController() : null;
     var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 3500);
-    return fetch(CFG.supabaseUrl + "/rest/v1/" + (CFG.contentTable || "evilance_content") + "?select=key,data", {
-      headers: { apikey: CFG.supabaseKey },
-      signal: ctrl ? ctrl.signal : undefined
-    })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (rows) {
-        clearTimeout(timer);
-        var remote = {};
-        rows.forEach(function (row) { remote[row.key] = row.data; });
-        return merge(DEFAULT, remote);
-      })
-      .catch(function () { clearTimeout(timer); return DEFAULT; });
+    function get(path) {
+      return fetch(CFG.supabaseUrl + "/rest/v1/" + path, { headers: { apikey: CFG.supabaseKey }, signal: ctrl ? ctrl.signal : undefined })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+    }
+    var content = get((CFG.contentTable || "evilance_content") + "?select=key,data").catch(function () { return []; });
+    var posts = get((CFG.postsTable || "evilance_posts") + "?select=slug,title,excerpt,category,cover_url,published_at&published=eq.true&order=published_at.desc&limit=60").catch(function () { return null; });
+    return Promise.all([content, posts]).then(function (res) {
+      clearTimeout(timer);
+      var remote = {};
+      res[0].forEach(function (row) { remote[row.key] = row.data; });
+      var c = merge(DEFAULT, remote);
+      if (res[1] && res[1].length) {
+        c.blog = Object.assign({}, c.blog);
+        c.blog.posts = res[1].slice(0, 6).map(function (p) {
+          return { title: p.title, date: p.published_at, category: p.category, excerpt: p.excerpt, url: "article.html?a=" + p.slug, cover: p.cover_url };
+        });
+        var cats = [];
+        res[1].forEach(function (p) { if (p.category && cats.indexOf(p.category) === -1) cats.push(p.category); });
+        if (cats.length) c.blog.categories = cats;
+        c.blog.total = res[1].length;
+      }
+      return c;
+    });
   }
 
   /* ------------------------------------------------------------------ */
@@ -136,12 +147,14 @@
     // Blog
     var b = c.blog || {};
     var posts = (b.posts || []).map(function (p) {
-      return '<a class="post" href="' + esc(safeUrl(p.url)) + '" target="_blank" rel="noopener">' +
+      var ext = /^https?:/.test(p.url || "");
+      return '<a class="post" href="' + esc(safeUrl(p.url)) + '"' + (ext ? ' target="_blank" rel="noopener"' : "") + ">" +
+        (p.cover ? '<span class="post__img"><img src="' + esc(p.cover) + '" alt="" loading="lazy"></span>' : "") +
         (p.category ? '<span class="post__cat">' + esc(p.category) + "</span>" : "") +
         '<h3 class="post__title">' + esc(p.title) + '</h3><p class="post__excerpt">' + esc(p.excerpt) + "</p>" +
         '<span class="post__meta"><time datetime="' + esc(p.date) + '">' + esc(frDate(p.date)) + '</time><span class="post__arrow">' + ARROW + "</span></span></a>";
     });
-    if (b.all_url) posts.push('<a class="post post--all" href="' + esc(safeUrl(b.all_url)) + '" target="_blank" rel="noopener"><h3 class="post__title">Tous les articles</h3><span class="post__meta"><span>Le blog complet</span><span class="post__arrow">' + ARROW + "</span></span></a>");
+    if (b.all_url) posts.push('<a class="post post--all" href="' + esc(safeUrl(b.all_url)) + '"><h3 class="post__title">Tous les articles</h3><span class="post__meta"><span>' + (b.total ? b.total + " articles à lire" : "Le blog complet") + '</span><span class="post__arrow">' + ARROW + "</span></span></a>");
     $("#blogTrack").innerHTML = posts.join("");
     var cats = (b.categories || []).map(function (x) { return "<span>" + esc(x) + "</span>"; }).join("");
     $("#cats").innerHTML = cats + cats;
@@ -204,7 +217,21 @@
     else target.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
   }
 
+  // Mise à l'échelle de la scène 3D de la serrure
+  function fitLock() {
+    var wrap = $("#lockWrap"), stage = $(".hero__stage");
+    if (!wrap || !stage) return;
+    var mobile = window.innerWidth <= 860;
+    var cs = getComputedStyle(stage);
+    var inner = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    var w = mobile ? inner : inner * 0.5;
+    var h = window.innerHeight * (mobile ? 0.48 : 0.8);
+    wrap.style.setProperty("--k", Math.min(1, w / 760, h / 560).toFixed(3));
+  }
+
   function initUi() {
+    fitLock();
+    window.addEventListener("resize", fitLock);
     var burger = $("#burger"), links = $("#navLinks");
     burger.addEventListener("click", function () {
       var open = burger.getAttribute("aria-expanded") !== "true";
@@ -255,6 +282,7 @@
       b.addEventListener("click", function () { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); if (lenis) lenis.stop(); });
     });
     dlg.addEventListener("close", function () { if (lenis) lenis.start(); });
+    if (location.hash === "#mentions") setTimeout(function () { $("[data-open-legal]").click(); }, 400);
     $(".legal__close").addEventListener("click", function () { dlg.close(); });
     dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
 
@@ -320,28 +348,31 @@
       gsap.ticker.lagSmoothing(0);
     }
 
-    /* --- 1. Ouverture : titre + serrure qui se dessine --- */
+    /* --- 1. Ouverture : titre, serrure, la clé arrive de la gauche --- */
+    var key = $("#key3d"), keyIn = $("#keyInner");
+    gsap.set(key, { x: -120, z: 2, rotationY: 0, transformOrigin: "452px 75px" });
+    gsap.set(keyIn, { transformOrigin: "50% 50%" });
     var intro = gsap.timeline({ defaults: { ease: "expo.out" } });
     intro
       .from(".hero__title .word", { yPercent: 110, duration: 1.3, stagger: 0.12 })
-      .from(".lock__ring", { drawSVG: "50% 50%", duration: 1.4, ease: "power3.inOut" }, 0.2)
-      .from(".lock__plate, .lock__cyl, .lock__hole", { scale: 0.6, svgOrigin: "350 500", opacity: 0, duration: 1.2 }, 0.3)
-      .from(".lock__halo", { scale: 0.7, svgOrigin: "350 500", opacity: 0, duration: 1.6, stagger: 0.15 }, 0.4)
-      .from("#key", { y: -120, rotation: -14, svgOrigin: "350 92", opacity: 0, duration: 1.4 }, 0.7)
+      .from(".lock__plate", { y: 40, opacity: 0, duration: 1.3 }, 0.25)
+      .from("#plateEdge", { drawSVG: "50% 50%", duration: 1.5, ease: "power3.inOut" }, 0.3)
+      .from(".lock__halo", { scale: 0.7, opacity: 0, duration: 1.6, stagger: 0.15 }, 0.4)
+      .from(keyIn, { x: -260, opacity: 0, duration: 1.5 }, 0.7)
       .from(".hero__hint", { opacity: 0, y: 10, duration: 0.8 }, 1.1);
 
-    /* --- 2. Scroll : la clé entre, tourne, la porte s'ouvre --- */
-    var stage = $(".hero__stage"), ring = $("#lockRing"), reveal = $("#heroReveal");
-    function ringGeom() {
-      var s = stage.getBoundingClientRect(), r = ring.getBoundingClientRect();
-      return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.height / 2, r: r.width / 2 };
+    /* --- 2. Scroll : la clé pivote dans la serrure, s'enfonce, tourne sur elle-même, la porte s'ouvre --- */
+    var stage = $(".hero__stage"), hole = $("#keyhole"), reveal = $("#heroReveal");
+    function holeGeom() {
+      var s = stage.getBoundingClientRect(), r = hole.getBoundingClientRect(), p = $("#lockPlate").getBoundingClientRect();
+      return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.width / 2, r: p.width / 2 };
     }
     function clipAt(rad) {
-      var g = ringGeom();
+      var g = holeGeom();
       return "circle(" + (rad == null ? g.r : rad) + "px at " + g.x + "px " + g.y + "px)";
     }
     function maxRadius() {
-      var g = ringGeom(), w = stage.clientWidth, h = stage.clientHeight;
+      var g = holeGeom(), w = stage.clientWidth, h = stage.clientHeight;
       return Math.hypot(Math.max(g.x, w - g.x), Math.max(g.y, h - g.y)) + 10;
     }
     gsap.set(reveal, { clipPath: "circle(0px at 70% 50%)" });
@@ -351,18 +382,23 @@
       scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom bottom", scrub: 0.8, invalidateOnRefresh: true }
     });
     tl.to(".hero__hint", { opacity: 0, duration: 0.05 }, 0)
-      .to("#key", { y: 164, duration: 0.3, ease: "power2.inOut" }, 0.04)
-      .to(".lock__ring", { stroke: "#FFCA4B", duration: 0.04 }, 0.33)
-      .to("#lockTurn", { rotation: 90, svgOrigin: "350 478", duration: 0.14, ease: "back.inOut(1.4)" }, 0.35)
-      .fromTo(".lock__ring", { scale: 1 }, { scale: 1.07, svgOrigin: "350 500", duration: 0.04, yoyo: true, repeat: 1, ease: "power2.out" }, 0.47)
+      // la pointe glisse jusqu'au trou puis la clé pivote vers l'intérieur de la serrure
+      .to(key, { x: 0, duration: 0.17, ease: "power1.inOut" }, 0.03)
+      .to(key, { rotationY: 64, duration: 0.16, ease: "power1.inOut" }, 0.06)
+      // elle s'enfonce le long de son axe
+      .to(keyIn, { x: 112, duration: 0.1, ease: "power3.in" }, 0.25)
+      .to(".lock__plate", { x: 4, duration: 0.012, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.35)
+      // elle tourne sur elle-même, la serrure s'allume
+      .to(keyIn, { rotationX: 180, duration: 0.14, ease: "back.inOut(1.3)" }, 0.37)
+      .to("#plateEdge", { stroke: "#FFCA4B", duration: 0.04 }, 0.47)
       .to(".hero__title .word", { yPercent: -110, duration: 0.12, stagger: 0.02, ease: "power2.in" }, 0.44)
-      .to(".lock__halo", { scale: 1.6, opacity: 0, svgOrigin: "350 500", duration: 0.2 }, 0.46)
-      .fromTo(reveal, { clipPath: function () { return clipAt(0); } }, { clipPath: function () { return clipAt(); }, duration: 0.04 }, 0.52)
-      .to(reveal, { clipPath: function () { return clipAt(maxRadius()); }, duration: 0.3, ease: "power2.in" }, 0.56)
+      .to(".lock__halo", { scale: 1.6, opacity: 0, duration: 0.2 }, 0.47)
+      .fromTo(reveal, { clipPath: function () { return clipAt(0); } }, { clipPath: function () { return clipAt(); }, duration: 0.05 }, 0.53)
+      .to(reveal, { clipPath: function () { return clipAt(maxRadius()); }, duration: 0.3, ease: "power2.in" }, 0.58)
       .to(".hero__photo", { scale: 1, duration: 0.38 }, 0.56)
-      .from(".hero__welcome", { yPercent: 60, opacity: 0, duration: 0.1 }, 0.82)
-      .from(".hero__subtitle", { y: 30, opacity: 0, duration: 0.1 }, 0.86)
-      .from(".hero__ctas", { y: 30, opacity: 0, duration: 0.1 }, 0.9)
+      .from(".hero__welcome", { yPercent: 60, opacity: 0, duration: 0.1 }, 0.84)
+      .from(".hero__subtitle", { y: 30, opacity: 0, duration: 0.1 }, 0.88)
+      .from(".hero__ctas", { y: 30, opacity: 0, duration: 0.1 }, 0.91)
       .to({}, { duration: 0.04 });
 
     /* --- 3. Manifeste : les mots s'allument --- */

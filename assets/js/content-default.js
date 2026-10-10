@@ -83,19 +83,19 @@ window.EVILANCE_DEFAULT = {
   blog: {
     title: "Le blog",
     intro: "Nous avons décidé de partager nos connaissances en gestion locative. Et si vous ne vous sentez pas assez à l’aise, nous sommes à vos côtés pour vous accompagner.",
-    all_url: "https://evilance.fr/?page_id=140",
+    all_url: "blog.html",
     categories: [
       "Bases de la gestion locative", "Aspects juridiques", "Relations locataires-propriétaires",
       "Entretien et maintenance", "Finances et fiscalité", "Types de location", "Outils et technologies",
       "Sécurité et assurance", "Marché et tendances", "Gestion professionnelle", "Promotion et marketing"
     ],
     posts: [
-      { title: "Les travaux à la charge du locataire et du propriétaire", date: "2025-04-08", category: "Entretien et maintenance", excerpt: "La répartition des travaux dans un logement loué est une source fréquente de litiges. Qui doit payer quoi ?", url: "https://evilance.fr/travaux-charge-locataire-proprietaire/" },
-      { title: "Les meilleures pratiques pour une bonne relation locataire-propriétaire", date: "2025-04-01", category: "Relations locataires-propriétaires", excerpt: "Une relation harmonieuse repose sur quelques bonnes pratiques simples, essentielles à une gestion fluide.", url: "https://evilance.fr/evilance-fr-meilleures-pratiques-relation-locataire-proprietaire/" },
-      { title: "Les obligations de performance énergétique des logements", date: "2025-03-25", category: "Aspects juridiques", excerpt: "Les obligations de performance énergétique sont devenues essentielles pour les propriétaires bailleurs.", url: "https://evilance.fr/les-obligations-de-performance-energetique-des-logements/" },
-      { title: "Les aides au logement disponibles pour les locataires", date: "2025-03-18", category: "Finances et fiscalité", excerpt: "Le logement pèse lourd dans le budget des ménages : tour d’horizon des aides qui peuvent l’alléger.", url: "https://evilance.fr/les-aides-au-logement-disponibles-pour-les-locataires/" },
-      { title: "Les impacts de la loi ALUR sur la gestion locative", date: "2025-03-04", category: "Aspects juridiques", excerpt: "Depuis 2014, la loi ALUR a transformé le marché locatif. Ce que tout propriétaire doit savoir.", url: "https://evilance.fr/les-impacts-de-la-loi-alur-sur-la-gestion-locative/" },
-      { title: "Comment gérer les nuisances sonores dans un immeuble", date: "2025-02-21", category: "Relations locataires-propriétaires", excerpt: "Voisin bruyant, musique trop forte, travaux à répétition : comment désamorcer les conflits.", url: "https://evilance.fr/comment-gerer-les-nuisances-sonores-dans-un-immeuble/" }
+      { title: "Les travaux à la charge du locataire et du propriétaire", date: "2025-04-08", category: "Entretien et maintenance", excerpt: "La répartition des travaux dans un logement loué est une source fréquente de litiges. Qui doit payer quoi ?", url: "article.html?a=travaux-charge-locataire-proprietaire" },
+      { title: "Les meilleures pratiques pour une bonne relation locataire-propriétaire", date: "2025-04-01", category: "Relations locataires-propriétaires", excerpt: "Une relation harmonieuse repose sur quelques bonnes pratiques simples, essentielles à une gestion fluide.", url: "article.html?a=evilance-fr-meilleures-pratiques-relation-locataire-proprietaire" },
+      { title: "Les obligations de performance énergétique des logements", date: "2025-03-25", category: "Aspects juridiques", excerpt: "Les obligations de performance énergétique sont devenues essentielles pour les propriétaires bailleurs.", url: "article.html?a=les-obligations-de-performance-energetique-des-logements" },
+      { title: "Les aides au logement disponibles pour les locataires", date: "2025-03-18", category: "Finances et fiscalité", excerpt: "Le logement pèse lourd dans le budget des ménages : tour d’horizon des aides qui peuvent l’alléger.", url: "article.html?a=les-aides-au-logement-disponibles-pour-les-locataires" },
+      { title: "Les impacts de la loi ALUR sur la gestion locative", date: "2025-03-04", category: "Aspects juridiques", excerpt: "Depuis 2014, la loi ALUR a transformé le marché locatif. Ce que tout propriétaire doit savoir.", url: "article.html?a=les-impacts-de-la-loi-alur-sur-la-gestion-locative" },
+      { title: "Comment gérer les nuisances sonores dans un immeuble", date: "2025-02-21", category: "Relations locataires-propriétaires", excerpt: "Voisin bruyant, musique trop forte, travaux à répétition : comment désamorcer les conflits.", url: "article.html?a=comment-gerer-les-nuisances-sonores-dans-un-immeuble" }
     ]
   },
 

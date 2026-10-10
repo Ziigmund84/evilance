@@ -5,7 +5,9 @@ Site vitrine de l’agence de gestion locative Evilance (Orléans), statique et 
 ## Structure
 
 ```
-index.html                 La page unique du site
+index.html                 La page d’accueil (one page)
+blog.html, article.html    Le blog : liste filtrable et page de lecture d’un article
+404.html                   Redirige les anciennes adresses d’articles vers la nouvelle page
 assets/css/site.css        Styles (palette du logo : marine, azur, miel, ambre)
 assets/js/site.js          Rendu du contenu + animations de défilement (GSAP, ScrollTrigger, Lenis)
 assets/js/content-default.js  Contenu par défaut, affiché si rien n’a été modifié dans l’admin
@@ -30,6 +32,7 @@ Pour utiliser le nom de domaine `evilance.fr`, renseignez-le dans **Settings →
 - Connexion par e-mail et mot de passe ; « Mot de passe oublié » envoie un lien de réinitialisation.
 - Chaque section du site est éditable ; **Enregistrer et publier** met le site à jour immédiatement.
 - **Revenir au contenu d’origine** efface la version modifiée d’une section.
+- **Articles du blog** : création, modification, brouillons et mise en ligne (éditeur de texte avec intertitres, listes, liens…).
 - **Médias** : envoi et choix des images (stockées dans Supabase Storage).
 - **Messages** : demandes envoyées depuis le formulaire de contact.
 

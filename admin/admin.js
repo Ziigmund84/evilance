@@ -7,6 +7,7 @@
   var BUCKET = CFG.bucket || "evilance-media";
   var T_CONTENT = CFG.contentTable || "evilance_content";
   var T_MESSAGES = CFG.messagesTable || "evilance_messages";
+  var T_POSTS = CFG.postsTable || "evilance_posts";
 
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -75,14 +76,8 @@
         { k: "title", label: "Intitulé de l’offre", type: "textarea" }, { k: "cta", label: "Texte du bouton" }
       ]}
     ]},
-    { key: "blog", label: "Blog", help: "Les articles mis en avant renvoient vers leur page complète.", fields: [
-      { k: "title", label: "Titre" }, { k: "intro", label: "Introduction", type: "textarea" },
-      { k: "all_url", label: "Lien « Tous les articles »", type: "url" },
-      { k: "posts", label: "Articles", type: "objects", add: "Ajouter un article", itemLabel: "Article", fields: [
-        { k: "title", label: "Titre" }, { k: "date", label: "Date", type: "date" }, { k: "category", label: "Catégorie" },
-        { k: "excerpt", label: "Résumé", type: "textarea" }, { k: "url", label: "Lien de l’article", type: "url" }
-      ]},
-      { k: "categories", label: "Thèmes (bandeau défilant)", type: "strings", add: "Ajouter un thème" }
+    { key: "blog", label: "Bloc blog (accueil)", help: "Le titre et l’introduction du bloc blog sur la page d’accueil. Les articles se gèrent dans « Articles ».", fields: [
+      { k: "title", label: "Titre" }, { k: "intro", label: "Introduction", type: "textarea" }
     ]},
     { key: "together", label: "Construire ensemble", fields: [
       { k: "title", label: "Titre" }, { k: "quote", label: "Citation" }, { k: "text", label: "Texte", type: "textarea" },
@@ -214,11 +209,12 @@
     var nav = $("#sideNav"); nav.innerHTML = "";
     SECTIONS.forEach(function (s) { nav.appendChild(el("button", { type: "button", "data-key": s.key, onclick: function () { open(s.key); } }, [s.label])); });
     nav.appendChild(el("div", { class: "sep" }));
+    nav.appendChild(el("button", { type: "button", "data-key": "_posts", onclick: function () { open("_posts"); } }, ["Articles du blog"]));
     nav.appendChild(el("button", { type: "button", "data-key": "_messages", onclick: function () { open("_messages"); } }, ["Messages", state.unread ? el("span", { class: "badge", text: String(state.unread) }) : null]));
     nav.appendChild(el("button", { type: "button", "data-key": "_media", onclick: function () { open("_media"); } }, ["Médias"]));
     markNav();
   }
-  function markNav() { $$("#sideNav button").forEach(function (b) { b.setAttribute("aria-current", String(b.dataset.key === state.current)); }); }
+  function markNav() { var cur = state.current && state.current.indexOf("_post:") === 0 ? "_posts" : state.current; $$("#sideNav button").forEach(function (b) { b.setAttribute("aria-current", String(b.dataset.key === cur)); }); }
 
   window.addEventListener("beforeunload", function (e) { if (state.dirty) { e.preventDefault(); e.returnValue = ""; } });
 
@@ -226,7 +222,9 @@
     if (state.dirty && key !== state.current && !confirm("Des modifications ne sont pas enregistrées. Les abandonner ?")) return;
     state.current = key; state.dirty = false; markNav();
     var main = $("#main"); main.innerHTML = "";
-    if (key === "_messages") renderMessages(main);
+    if (key === "_posts") renderPosts(main);
+    else if (key.indexOf("_post:") === 0) renderPostEditor(main, key.slice(6));
+    else if (key === "_messages") renderMessages(main);
     else if (key === "_media") renderMedia(main);
     else renderSection(main, SECTIONS.filter(function (s) { return s.key === key; })[0]);
     main.focus(); window.scrollTo(0, 0);
@@ -443,6 +441,171 @@
         var u = publicUrl(f.name);
         grid.appendChild(el("button", { class: "media pickable", type: "button", onclick: function () { cb(u); dlg.close(); } }, [el("img", { src: u, alt: f.name }), el("div", { class: "media__info" }, [f.name])]));
       });
+    });
+  }
+
+
+  /* ------------------------------------------------------------------ */
+  /* Articles du blog                                                    */
+  /* ------------------------------------------------------------------ */
+  function slugify(s) {
+    return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 90);
+  }
+  function siteBase() { return location.href.replace(/admin\/.*$/, ""); }
+
+  function renderPosts(main) {
+    main.appendChild(el("div", { class: "head" }, [
+      el("div", {}, [el("h1", { text: "Articles du blog" }), el("p", { text: "Rédigez, modifiez et publiez les articles de la page Blog." })]),
+      el("button", { class: "btn", type: "button", text: "Nouvel article", onclick: function () { open("_post:new"); } })
+    ]));
+    var search = el("input", { type: "search", placeholder: "Rechercher un article…", "aria-label": "Rechercher un article" });
+    main.appendChild(el("div", { class: "card", style: "margin-bottom:16px" }, [search]));
+    var box = el("div", { class: "posts" });
+    main.appendChild(box);
+    sb.from(T_POSTS).select("id,slug,title,category,published,published_at,cover_url").order("published_at", { ascending: false }).then(function (r) {
+      if (r.error) { box.appendChild(el("p", { class: "empty", text: "Lecture impossible : " + r.error.message })); return; }
+      function draw() {
+        var q = search.value.toLowerCase();
+        box.innerHTML = "";
+        var rows = r.data.filter(function (p) { return !q || (p.title + " " + p.category).toLowerCase().indexOf(q) !== -1; });
+        if (!rows.length) { box.appendChild(el("p", { class: "empty", text: q ? "Aucun article ne correspond." : "Aucun article. Créez le premier !" })); return; }
+        rows.forEach(function (p) {
+          box.appendChild(el("article", { class: "prow" }, [
+            el("img", { class: "prow__img", src: p.cover_url || "../assets/img/favicon.svg", alt: "" }),
+            el("div", { class: "prow__main" }, [
+              el("strong", { text: p.title }),
+              el("span", { class: "msg__meta", text: new Date(p.published_at + "T12:00:00").toLocaleDateString("fr-FR") + " · " + (p.category || "Sans thème") })
+            ]),
+            el("span", { class: "pill" + (p.published ? " pill--on" : ""), text: p.published ? "En ligne" : "Brouillon" }),
+            el("div", { class: "msg__actions" }, [
+              el("button", { class: "btn btn--dark btn--sm", type: "button", text: "Modifier", onclick: function () { open("_post:" + p.id); } }),
+              p.published ? el("a", { class: "btn btn--ghost btn--sm", href: siteBase() + "article.html?a=" + p.slug, target: "_blank", rel: "noopener", text: "Voir" }) : null
+            ])
+          ]));
+        });
+      }
+      search.addEventListener("input", draw);
+      draw();
+    });
+  }
+
+  var TOOLS = [
+    ["formatBlock", "H2", "Intertitre"], ["formatBlock", "H3", "Sous-titre"], ["formatBlock", "P", "Paragraphe"],
+    ["bold", null, "Gras"], ["italic", null, "Italique"],
+    ["insertUnorderedList", null, "• Liste"], ["insertOrderedList", null, "1. Liste"],
+    ["formatBlock", "BLOCKQUOTE", "Citation"], ["link", null, "Lien"], ["unlink", null, "Retirer le lien"], ["removeFormat", null, "Effacer le style"]
+  ];
+
+  function cleanHtml(html) {
+    var t = document.createElement("template"); t.innerHTML = html;
+    var ok = { P: 1, H2: 1, H3: 1, H4: 1, STRONG: 1, B: 1, EM: 1, I: 1, A: 1, UL: 1, OL: 1, LI: 1, BR: 1, BLOCKQUOTE: 1, SUP: 1, IMG: 1 };
+    (function walk(node) {
+      Array.prototype.slice.call(node.children).forEach(function (n) {
+        walk(n);
+        if (!ok[n.tagName]) { n.replaceWith.apply(n, Array.prototype.slice.call(n.childNodes)); return; }
+        if (n.tagName === "B" || n.tagName === "I") { var r = document.createElement(n.tagName === "B" ? "strong" : "em"); r.append.apply(r, Array.prototype.slice.call(n.childNodes)); n.replaceWith(r); return; }
+        Array.prototype.slice.call(n.attributes).forEach(function (a) {
+          if (!((n.tagName === "A" && a.name === "href") || (n.tagName === "IMG" && (a.name === "src" || a.name === "alt")))) n.removeAttribute(a.name);
+        });
+      });
+    })(t.content);
+    return t.innerHTML.replace(/<p>(\s|&nbsp;|<br>)*<\/p>/g, "").trim();
+  }
+
+  function renderPostEditor(main, id) {
+    var isNew = id === "new";
+    var load = isNew ? Promise.resolve({ data: { title: "", slug: "", excerpt: "", content: "<p></p>", category: "", cover_url: "", author: "Olivier", published: false, published_at: new Date().toISOString().slice(0, 10) } })
+      : sb.from(T_POSTS).select("*").eq("id", id).single();
+    Promise.all([load, sb.from(T_POSTS).select("category")]).then(function (res) {
+      var r = res[0];
+      if (r.error) { main.appendChild(el("p", { class: "empty", text: "Article introuvable : " + r.error.message })); return; }
+      var p = r.data, slugTouched = !isNew;
+      var cats = []; (res[1].data || []).forEach(function (x) { if (x.category && cats.indexOf(x.category) === -1) cats.push(x.category); });
+
+      main.appendChild(el("div", { class: "head" }, [
+        el("div", {}, [el("button", { class: "linkbtn", type: "button", text: "← Tous les articles", onclick: function () { open("_posts"); } }), el("h1", { text: isNew ? "Nouvel article" : "Modifier l’article" })])
+      ]));
+
+      function inp(label, key, type, help) {
+        var i = el(type === "textarea" ? "textarea" : "input", { type: type === "textarea" ? null : (type || "text"), rows: type === "textarea" ? 3 : null });
+        i.value = p[key] == null ? "" : p[key];
+        i.addEventListener("input", function () { p[key] = i.value; touch(); });
+        return { input: i, node: el("label", {}, [label, help ? el("span", { class: "field-help", text: help }) : null, i]) };
+      }
+      var title = inp("Titre", "title");
+      var slug = inp("Adresse de l’article", "slug", "text", "Utilisée dans le lien : article.html?a=…");
+      title.input.addEventListener("input", function () { if (!slugTouched) { p.slug = slugify(title.input.value); slug.input.value = p.slug; } });
+      slug.input.addEventListener("input", function () { slugTouched = true; p.slug = slugify(slug.input.value); });
+      var cat = inp("Thème", "category");
+      var dl = el("datalist", { id: "cats" }, cats.map(function (c) { return el("option", { value: c }); }));
+      cat.input.setAttribute("list", "cats");
+      var date = inp("Date de publication", "published_at", "date");
+      var author = inp("Auteur", "author");
+      var excerpt = inp("Résumé", "excerpt", "textarea", "Affiché dans les listes et sur Google (2 ou 3 phrases).");
+      var pub = el("input", { type: "checkbox", onchange: function () { p.published = pub.checked; touch(); } }); pub.checked = !!p.published;
+
+      // Couverture
+      var cover = { cover: p.cover_url };
+      var coverField = imageField({ k: "cover", label: "Image de couverture" }, cover);
+
+      // Éditeur de texte
+      var editor = el("div", { class: "rte__area", contenteditable: "true", role: "textbox", "aria-multiline": "true", "aria-label": "Contenu de l’article" });
+      editor.innerHTML = p.content || "<p></p>";
+      var htmlArea = el("textarea", { class: "code", hidden: true, "aria-label": "Code HTML de l’article" });
+      var htmlMode = false;
+      editor.addEventListener("input", touch);
+      htmlArea.addEventListener("input", touch);
+      editor.addEventListener("paste", function (e) {
+        var html = (e.clipboardData || window.clipboardData).getData("text/html");
+        if (html) { e.preventDefault(); document.execCommand("insertHTML", false, cleanHtml(html)); }
+      });
+      var bar = el("div", { class: "rte__bar" }, TOOLS.map(function (t) {
+        return el("button", { type: "button", class: "rte__btn", text: t[2], onmousedown: function (e) { e.preventDefault(); }, onclick: function () {
+          if (htmlMode) return;
+          editor.focus();
+          if (t[0] === "link") {
+            var u = prompt("Adresse du lien (https://… ou index.html#contact)");
+            if (u) document.execCommand("createLink", false, u);
+          } else document.execCommand(t[0], false, t[1] ? "<" + t[1] + ">" : null);
+          touch();
+        } });
+      }).concat([el("button", { type: "button", class: "rte__btn rte__btn--html", text: "HTML", onclick: function () {
+        htmlMode = !htmlMode;
+        if (htmlMode) { htmlArea.value = cleanHtml(editor.innerHTML); htmlArea.hidden = false; editor.hidden = true; }
+        else { editor.innerHTML = htmlArea.value; htmlArea.hidden = true; editor.hidden = false; }
+      } })]));
+
+      main.appendChild(el("div", { class: "card" }, [
+        title.node, el("div", { class: "row2" }, [slug.node, el("div", {}, [cat.node, dl])]),
+        el("div", { class: "row2" }, [date.node, author.node]),
+        excerpt.node, coverField
+      ]));
+      main.appendChild(el("div", { class: "card" }, [el("strong", { text: "Contenu" }), el("div", { class: "rte" }, [bar, editor, htmlArea])]));
+      main.appendChild(el("div", { class: "card" }, [el("label", { class: "check" }, [pub, "Article en ligne (visible sur le site)"])]));
+
+      var saveBtn = el("button", { class: "btn", type: "button", text: "Enregistrer", onclick: function () {
+        p.content = cleanHtml(htmlMode ? htmlArea.value : editor.innerHTML);
+        p.cover_url = cover.cover || "";
+        p.title = p.title.trim(); p.slug = slugify(p.slug || p.title);
+        if (!p.title) { toast("Donnez un titre à l’article.", true); title.input.focus(); return; }
+        if (!p.slug) { toast("L’adresse de l’article est vide.", true); return; }
+        var row = { title: p.title, slug: p.slug, excerpt: (p.excerpt || "").trim(), content: p.content, category: (p.category || "").trim(), cover_url: p.cover_url || "", author: (p.author || "").trim() || "Evilance", published: !!p.published, published_at: p.published_at || new Date().toISOString().slice(0, 10) };
+        saveBtn.disabled = true;
+        var q = isNew ? sb.from(T_POSTS).insert(row).select("id").single() : sb.from(T_POSTS).update(row).eq("id", p.id).select("id").single();
+        q.then(function (x) {
+          saveBtn.disabled = false;
+          if (x.error) { toast(/duplicate|unique/i.test(x.error.message) ? "Cette adresse d’article existe déjà, choisissez-en une autre." : "Enregistrement impossible : " + x.error.message, true); return; }
+          state.dirty = false;
+          toast(row.published ? "Article enregistré et en ligne." : "Brouillon enregistré.");
+          open("_post:" + x.data.id);
+        });
+      } });
+      var delBtn = isNew ? null : el("button", { class: "btn btn--danger", type: "button", text: "Supprimer", onclick: function () {
+        if (!confirm("Supprimer définitivement « " + p.title + " » ?")) return;
+        sb.from(T_POSTS).delete().eq("id", p.id).then(function (x) { if (x.error) toast(x.error.message, true); else { state.dirty = false; toast("Article supprimé."); open("_posts"); } });
+      } });
+      var view = !isNew && p.published ? el("a", { class: "btn btn--ghost", href: siteBase() + "article.html?a=" + p.slug, target: "_blank", rel: "noopener", text: "Voir l’article" }) : null;
+      main.appendChild(el("div", { class: "savebar" }, [el("span", { class: "savebar__state", text: isNew ? "Nouvel article" : "Modifié le " + new Date(p.updated_at).toLocaleString("fr-FR") }), delBtn, view, saveBtn]));
     });
   }
 

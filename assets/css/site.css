@@ -194,16 +194,28 @@ button { font: inherit; }
 .hero__mouse::after { content: ""; position: absolute; left: 50%; top: 6px; width: 4px; height: 7px; margin-left: -2px; border-radius: 2px; background: var(--miel); animation: wheel 1.8s infinite; }
 @keyframes wheel { 0% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(10px); opacity: 0; } 100% { opacity: 0; } }
 
-.hero__lock { position: relative; z-index: 1; height: min(80vh, 780px); height: min(80svh, 780px); width: auto; max-width: 100%; justify-self: center; overflow: visible; }
-.lock__halo { fill: none; stroke: rgba(0,176,240,.18); stroke-width: 1.5; stroke-dasharray: 2 10; }
-.lock__halo--2 { stroke: rgba(255,255,255,.07); stroke-dasharray: none; }
-.lock__plate { fill: #0F2B44; }
-.lock__ring { fill: none; stroke: var(--azur); stroke-width: 6; }
-.lock__hole { fill: #06131F; }
-.key { filter: drop-shadow(0 18px 22px rgba(0,0,0,.35)); }
-.key__shine { fill: #fff; opacity: .45; }
+/* Serrure 3D : la scène fait 760 × 560 et est mise à l'échelle par le JS (--k) */
+.lock { position: relative; z-index: 1; justify-self: center; width: calc(760px * var(--k, 1)); height: calc(560px * var(--k, 1)); }
+.lock__stage {
+  position: absolute; left: 0; top: 0; width: 760px; height: 560px;
+  transform: scale(var(--k, 1)); transform-origin: 0 0;
+  transform-style: preserve-3d;
+  perspective: 1100px; perspective-origin: 600px 242px;
+}
+.lock__halo { position: absolute; left: 600px; top: 242px; width: 470px; height: 470px; margin: -235px 0 0 -235px; border-radius: 50%; border: 1.5px dashed rgba(0,176,240,.2); }
+.lock__halo--2 { width: 620px; height: 620px; margin: -310px 0 0 -310px; border: 1px solid rgba(255,255,255,.06); }
+.lock__plate { position: absolute; left: 480px; top: 50px; width: 240px; height: 420px; overflow: visible; transform: translateZ(0); filter: drop-shadow(0 30px 40px rgba(0,0,0,.35)); }
+.plate__edge { fill: none; stroke: var(--azur); stroke-width: 5; }
+.plate__inner { fill: none; stroke: rgba(255,255,255,.08); stroke-width: 1.5; }
+.plate__screw circle { fill: #0A1D2E; stroke: rgba(255,255,255,.15); stroke-width: 1.5; }
+.plate__screw path { stroke: rgba(255,255,255,.3); stroke-width: 2; stroke-linecap: round; }
+.key3d { position: absolute; left: 148px; top: 167px; width: 460px; height: 150px; transform-style: preserve-3d; }
+.key3d__inner { width: 100%; height: 100%; transform-style: preserve-3d; }
+.key3d__inner svg { display: block; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 14px 16px rgba(0,0,0,.35)); }
+.key__groove { stroke: rgba(120,70,0,.28); stroke-width: 3; stroke-linecap: round; }
 .key__collar { fill: var(--ambre); }
-.key__bow-line { fill: none; stroke: rgba(255,255,255,.35); stroke-width: 2; }
+.key__rim { fill: none; stroke: rgba(255,255,255,.28); stroke-width: 2; }
+.key__e { fill: none; stroke: #fff; stroke-width: 13.4; stroke-linecap: round; stroke-linejoin: round; }
 
 .hero__reveal {
   position: absolute; inset: 0; z-index: 3; background: var(--marine);
@@ -220,7 +232,7 @@ button { font: inherit; }
 
 @media (max-width: 860px) {
   .hero__stage { grid-template-columns: 1fr; grid-template-rows: auto 1fr; align-content: start; padding-top: 110px; }
-  .hero__lock { height: auto; width: min(100%, 340px); margin-top: -20px; }
+  .lock { margin-top: -10px; }
   .hero__hint { display: none; }
   .hero__reveal { clip-path: circle(0px at 50% 66%); }
 }
@@ -387,6 +399,10 @@ button { font: inherit; }
   transition: background-color .4s, transform .5s var(--ease-out);
 }
 .post:hover { background: #1D4468; transform: translateY(-6px); }
+.post { overflow: hidden; }
+.post__img { display: block; margin: -28px -28px 22px; aspect-ratio: 16 / 9; overflow: hidden; background: var(--nuit); }
+.post__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease-out); }
+.post:hover .post__img img { transform: scale(1.06); }
 .post__cat { display: inline-block; align-self: flex-start; font-size: .82rem; font-weight: 600; color: var(--nuit); background: var(--azur-soft); border-radius: 999px; padding: 4px 12px; margin-bottom: 22px; }
 .post__title { font-family: var(--display); font-weight: 650; font-size: 1.45rem; line-height: 1.15; margin: 0 0 14px; text-wrap: balance; }
 .post__excerpt { color: rgba(255,255,255,.72); margin: 0 0 auto; font-size: .98rem; }
