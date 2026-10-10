@@ -17,7 +17,7 @@ window.EVILANCE_DEFAULT = {
   hero: {
     title: "Gérer. Partager. Construire ensemble.",
     subtitle: "Notre volonté est d’accompagner les propriétaires dans la gestion locative de leur bien situé sur l’agglomération orléanaise et le partage de connaissances sur la gestion immobilière.",
-    image: "https://evilance.fr/wp-content/uploads/2024/09/9-Marche-et-Tendances-png.webp",
+    image: "https://kdcflcvufukagdjycwww.supabase.co/storage/v1/object/public/evilance-media/site/interieur.webp",
     cta_primary: "Confier mon bien",
     cta_secondary: "Découvrir l’agence"
   },
@@ -38,7 +38,7 @@ window.EVILANCE_DEFAULT = {
       "Entretien et réparations",
       "Gestion des conflits"
     ],
-    image: "https://evilance.fr/wp-content/uploads/2024/07/8-Securite-et-Assurance-1024x1024.png",
+    image: "https://kdcflcvufukagdjycwww.supabase.co/storage/v1/object/public/evilance-media/site/securite.webp",
     advantages_title: "Avantages de la gestion locative",
     advantages: [
       { title: "Gain de temps", points: ["Moins de tâches administratives pour le propriétaire", "Moins de tracas liés à la recherche de locataires et à la gestion quotidienne"] },
@@ -73,7 +73,7 @@ window.EVILANCE_DEFAULT = {
     enabled: true,
     title: "Offres du moment",
     end_date: "2026-10-31",
-    image: "https://evilance.fr/wp-content/uploads/2024/09/Offre-1024x683.webp",
+    image: "https://kdcflcvufukagdjycwww.supabase.co/storage/v1/object/public/evilance-media/site/offre.webp",
     items: [
       { title: "Parrainez un proche pour un mandat de gestion et recevez 200 €", cta: "Cela m’intéresse" },
       { title: "4 premiers mois offerts sur les honoraires de gestion", cta: "Cela m’intéresse" }
@@ -103,7 +103,7 @@ window.EVILANCE_DEFAULT = {
     title: "Construire ensemble",
     quote: "Seul on va plus vite, ensemble on va plus loin.",
     text: "Notre volonté est de vous satisfaire, et rien de mieux que de partager vos envies. En deux minutes, exprimez-vous librement sur la gestion locative de demain.",
-    image: "https://evilance.fr/wp-content/uploads/2024/08/Construire_ensemble.jpg",
+    image: "https://kdcflcvufukagdjycwww.supabase.co/storage/v1/object/public/evilance-media/site/ensemble.webp",
     owner_label: "Je suis propriétaire",
     owner_url: "https://forms.office.com/e/caa7D2cBtU",
     tenant_label: "Je suis locataire",

@@ -43,8 +43,8 @@
     if (!CFG.supabaseUrl || !CFG.supabaseKey) return Promise.resolve(DEFAULT);
     var ctrl = window.AbortController ? new AbortController() : null;
     var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 3500);
-    return fetch(CFG.supabaseUrl + "/rest/v1/site_content?select=key,data", {
-      headers: { apikey: CFG.supabaseKey, Authorization: "Bearer " + CFG.supabaseKey },
+    return fetch(CFG.supabaseUrl + "/rest/v1/" + (CFG.contentTable || "evilance_content") + "?select=key,data", {
+      headers: { apikey: CFG.supabaseKey },
       signal: ctrl ? ctrl.signal : undefined
     })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
@@ -283,9 +283,9 @@
 
       var send;
       if (CFG.supabaseUrl && CFG.supabaseKey) {
-        send = fetch(CFG.supabaseUrl + "/rest/v1/messages", {
+        send = fetch(CFG.supabaseUrl + "/rest/v1/" + (CFG.messagesTable || "evilance_messages"), {
           method: "POST",
-          headers: { apikey: CFG.supabaseKey, Authorization: "Bearer " + CFG.supabaseKey, "Content-Type": "application/json", Prefer: "return=minimal" },
+          headers: { apikey: CFG.supabaseKey, "Content-Type": "application/json", Prefer: "return=minimal" },
           body: JSON.stringify(payload)
         }).then(function (r) { if (!r.ok) throw new Error(r.status); });
       } else {

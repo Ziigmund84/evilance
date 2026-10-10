@@ -4,7 +4,9 @@
 
   var CFG = window.EVILANCE_CONFIG || {};
   var DEFAULT = window.EVILANCE_DEFAULT;
-  var BUCKET = "media";
+  var BUCKET = CFG.bucket || "evilance-media";
+  var T_CONTENT = CFG.contentTable || "evilance_content";
+  var T_MESSAGES = CFG.messagesTable || "evilance_messages";
 
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -185,7 +187,7 @@
   /* Application                                                         */
   /* ------------------------------------------------------------------ */
   function enterApp(session) {
-    sb.rpc("is_admin").then(function (r) {
+    sb.rpc(CFG.adminCheck || "evilance_is_admin").then(function (r) {
       if (r.error || r.data !== true) {
         showAuth(); authMsg("Ce compte n’a pas les droits d’administration.", "err");
         sb.auth.signOut();
@@ -199,8 +201,8 @@
 
   function loadAll() {
     return Promise.all([
-      sb.from("site_content").select("key,data,updated_at"),
-      sb.from("messages").select("id", { count: "exact", head: true }).eq("is_read", false)
+      sb.from(T_CONTENT).select("key,data,updated_at"),
+      sb.from(T_MESSAGES).select("id", { count: "exact", head: true }).eq("is_read", false)
     ]).then(function (res) {
       state.rows = {};
       (res[0].data || []).forEach(function (r) { state.rows[r.key] = r; });
@@ -355,7 +357,7 @@
 
   function save(sec, btn) {
     btn.disabled = true;
-    sb.from("site_content").upsert({ key: sec.key, data: state.draft }).select().single().then(function (r) {
+    sb.from(T_CONTENT).upsert({ key: sec.key, data: state.draft }).select().single().then(function (r) {
       btn.disabled = false;
       if (r.error) { toast("Enregistrement impossible : " + r.error.message, true); return; }
       state.rows[sec.key] = r.data; state.dirty = false;
@@ -366,7 +368,7 @@
 
   function resetSection(sec) {
     if (!confirm("Remettre « " + sec.label + " » comme à l’origine ? Vos modifications de cette section seront perdues.")) return;
-    sb.from("site_content").delete().eq("key", sec.key).then(function (r) {
+    sb.from(T_CONTENT).delete().eq("key", sec.key).then(function (r) {
       if (r.error) { toast("Action impossible : " + r.error.message, true); return; }
       delete state.rows[sec.key]; state.dirty = false;
       toast("Section remise à l’origine.");
@@ -449,7 +451,7 @@
     main.appendChild(el("div", { class: "head" }, [el("div", {}, [el("h1", { text: "Messages" }), el("p", { text: "Les demandes envoyées depuis le formulaire de contact." })])]));
     var box = el("div");
     main.appendChild(box);
-    sb.from("messages").select("*").order("created_at", { ascending: false }).limit(200).then(function (r) {
+    sb.from(T_MESSAGES).select("*").order("created_at", { ascending: false }).limit(200).then(function (r) {
       if (r.error) { box.appendChild(el("p", { class: "empty", text: "Lecture impossible : " + r.error.message })); return; }
       if (!r.data.length) { box.appendChild(el("p", { class: "empty", text: "Aucun message pour l’instant." })); return; }
       r.data.forEach(function (m) {
@@ -467,11 +469,11 @@
             el("a", { class: "btn btn--dark btn--sm", href: reply, text: "Répondre par e-mail" }),
             m.phone ? el("a", { class: "btn btn--ghost btn--sm", href: "tel:" + m.phone, text: "Appeler" }) : null,
             el("button", { class: "btn btn--ghost btn--sm", type: "button", text: m.is_read ? "Marquer non lu" : "Marquer comme lu", onclick: function () {
-              sb.from("messages").update({ is_read: !m.is_read }).eq("id", m.id).then(function (x) { if (x.error) toast(x.error.message, true); else refreshMessages(); });
+              sb.from(T_MESSAGES).update({ is_read: !m.is_read }).eq("id", m.id).then(function (x) { if (x.error) toast(x.error.message, true); else refreshMessages(); });
             } }),
             el("button", { class: "btn btn--danger btn--sm", type: "button", text: "Supprimer", onclick: function () {
               if (!confirm("Supprimer définitivement ce message ?")) return;
-              sb.from("messages").delete().eq("id", m.id).then(function (x) { if (x.error) toast(x.error.message, true); else refreshMessages(); });
+              sb.from(T_MESSAGES).delete().eq("id", m.id).then(function (x) { if (x.error) toast(x.error.message, true); else refreshMessages(); });
             } })
           ])
         ]);
